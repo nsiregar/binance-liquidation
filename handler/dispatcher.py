@@ -25,11 +25,11 @@ class MessageDispatcher:
                     args=(discord_msg,),
                     retry=retry,
                 ),
-                # Queue.prepare_data(
-                #     self.telegram_handler.send_msg,
-                #     args=(telegram_msg,),
-                #     retry=retry,
-                # ),
+                Queue.prepare_data(
+                    self.telegram_handler.send_msg,
+                    args=(telegram_msg,),
+                    retry=retry,
+                ),
             ],
         )
 
@@ -47,7 +47,7 @@ class Message:
 class TelegramMessage(Message):
     def __str__(self):
         formatted_usd = humanize_number(self.usd)
-        log_msg = f"{self.start_emoji} **Liq. {self.direction}** | #{self.pair} | ${formatted_usd} at ${self.price:.2f} | Funding Rate: {self.funding_rate:.3f}%"
+        log_msg = f"{self.start_emoji} Liq. {self.direction} | #{self.pair} | ${formatted_usd} at ${self.price:.2f} | Funding Rate: {self.funding_rate:.3f}%"
         return emoji.emojize(log_msg)
 
 
