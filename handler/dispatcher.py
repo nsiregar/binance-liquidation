@@ -22,17 +22,15 @@ class MessageDispatcher:
             [
                 Queue.prepare_data(
                     self.discord_handler.send_msg,
-                    discord_msg,
-                    job_id="send_msg_discord",
+                    args=(discord_msg,),
                     retry=retry,
                 ),
-                Queue.prepare_data(
-                    self.telegram_handler.send_msg,
-                    telegram_msg,
-                    job_id="send_msg_telegram",
-                    retry=retry,
-                ),
-            ]
+                # Queue.prepare_data(
+                #     self.telegram_handler.send_msg,
+                #     args=(telegram_msg,),
+                #     retry=retry,
+                # ),
+            ],
         )
 
 
