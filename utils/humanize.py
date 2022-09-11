@@ -14,9 +14,9 @@ def humanize_number(value, significant_digits=3, strip_trailing_zeros=True):
     humanize_number(.0006666, 2) = 670µ
     """
     powers = [10 ** x for x in (12, 9, 6, 3, 0, -3, -6, -9)]
-    human_powers = ['T', 'B', 'M', 'K', '', 'm', u'µ', 'n']
+    human_powers = ["T", "B", "M", "K", "", "m", u"µ", "n"]
     is_negative = False
-    suffix = ''
+    suffix = ""
 
     if not isinstance(value, float):
         value = float(value)
@@ -25,7 +25,7 @@ def humanize_number(value, significant_digits=3, strip_trailing_zeros=True):
         value = abs(value)
     if value == 0:
         decimal_places = max(0, significant_digits - 1)
-    elif .001 <= value < 1:  # don't humanize these, because 3.0m can be interpreted as 3 million
+    elif 0.001 <= value < 1:
         decimal_places = max(0, significant_digits - int(floor(log10(value))) - 1)
     else:
         p = next((x for x in powers if value >= x), 10 ** -9)
@@ -38,7 +38,7 @@ def humanize_number(value, significant_digits=3, strip_trailing_zeros=True):
     return_value = ("%." + str(decimal_places) + "f") % value
     if is_negative:
         return_value = "-" + return_value
-    if strip_trailing_zeros and '.' in return_value:
-        return_value = return_value.rstrip('0').rstrip('.')
+    if strip_trailing_zeros and "." in return_value:
+        return_value = return_value.rstrip("0").rstrip(".")
 
     return return_value + suffix
