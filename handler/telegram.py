@@ -1,20 +1,16 @@
-import requests
+from telegram import Bot
 from config import config
+
+telegram_bot = Bot(config.TELEGRAM_BOT_TOKEN)
 
 
 class TelegramHandler:
     def __init__(self):
         self.chat_id = config.TELEGRAM_CHANNEL_ID
-        self.token = config.TELEGRAM_BOT_TOKEN
 
     def send_msg(self, msg):
-        url = f"https://api.telegram.org/bot{self.token}/sendMessage"
-        json_data = {
-            "chat_id": self.chat_id,
-            "text": msg,
-        }
-        headers = {
-            "Content-Type": "application/json"
-        }
-        resp = requests.post(url, json=json_data, headers=headers)
-        resp.raise_for_status()
+        telegram_bot.send_message(
+            self.chat_id,
+            msg,
+            parse_mode="MARKDOWN",
+        )
