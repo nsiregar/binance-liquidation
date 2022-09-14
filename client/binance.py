@@ -5,7 +5,7 @@ import datetime
 import websocket
 import logging
 
-from handler.dispatcher import MessageDispatcher
+from handler.dispatcher import MessageDispatcher, Message
 from utils.humanize import humanize_number
 
 logger = logging.getLogger()
@@ -69,7 +69,6 @@ class BinanceWSClient:
         if pair_data is None:
             return
 
-        minute = int(timestamp.minute)
         side = data["S"]
         price = float(data["ap"])
         amount = float(data["q"])
@@ -77,24 +76,22 @@ class BinanceWSClient:
 
         delay = timestamp - trade_time
         delay = int(1000 * delay.total_seconds())  # In milliseconds
-        usd = amount * price  # / 1000  # In thousands
+        usd = amount * price
 
         direction = "LONG" if side == "SELL" else "SHORT"
         start_emoji = ":red_circle:" if direction == "LONG" else ":green_circle:"
-        formatted_usd = humanize_number(usd, strip_trailing_zeros=False)
-        log_msg = f"{start_emoji} **Liq. {direction}** | {pair_symbol} | ${formatted_usd} at ${price:.2f} | Funding Rate: {pair_data.funding_rate:.3f}%"
-        logger.info(f"Delay: {delay} ms | {log_msg}")
-        msg_data = {
-            "start_emoji": start_emoji,
-            "pair": pair_symbol,
-            "direction": direction,
-            "usd": usd,
-            "price": price,
-            "funding_rate": pair_data.funding_rate,
-        }
+        message = Message(
+            start_emoji=start_emoji,
+            pair=pair_symbol,
+            direction=direction,
+            usd=usd,
+            price=price,
+            funding_rate=pair_data.funding_rate,
+        )
+        logger.info(f"Delay: {delay} ms | {message.discord_msg}")
 
         if (usd / 1000) > pair_data.usd_limit:
-            self.dispatcher.send_msg(msg_data)
+            self.dispatcher.send_msg(message=message)
 
 
 class PairData:
