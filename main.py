@@ -1,11 +1,13 @@
 import logging
 import threading
+import sys
 
 from client.binance import BinanceWSClient
 from binance_symbols import SYMBOLS
 from utils.chunk import make_chunks
 
 logging.basicConfig(
+    stream=sys.stdout,
     format="%(asctime)s %(levelname)s %(message)s",
     level="INFO",
     datefmt="%Y-%m-%d %H:%M:%S",

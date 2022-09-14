@@ -6,7 +6,6 @@ import websocket
 import logging
 
 from handler.dispatcher import MessageDispatcher, Message
-from utils.humanize import humanize_number
 
 logger = logging.getLogger()
 
