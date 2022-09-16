@@ -1,5 +1,4 @@
 import json
-import threading
 import datetime
 
 import websocket
@@ -28,13 +27,13 @@ class BinanceWSClient:
         ws = websocket.WebSocketApp(self.socket, on_message=self.parse_msg)
         ws.run_forever()
 
-    def parse_msg(self, ws, msg):
+    def parse_msg(self, _ws, msg):
         try:
             data = json.loads(msg)["data"]
             if data["e"] == "markPriceUpdate":
-                threading.Thread(target=self._parse_price_update, args=[data]).start()
+                self._parse_price_update(data)
             elif data["e"] == "forceOrder":
-                threading.Thread(target=self._parse_force_order, args=[data]).start()
+                self._parse_force_order(data)
             else:
                 logger.error("[PARSE MSG][ERROR] Stream data not recognized")
         except Exception as exc:
@@ -91,6 +90,7 @@ class BinanceWSClient:
 
         if (usd / 1000) > pair_data.usd_limit:
             self.dispatcher.send_msg(message=message)
+        del message
 
 
 class PairData:
