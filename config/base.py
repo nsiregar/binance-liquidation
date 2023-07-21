@@ -13,3 +13,4 @@ class BaseConfig:
     MASTODON_CLIENT_ID = os.getenv("MASTODON_CLIENT_ID")
     MASTODON_CLIENT_SECRET = os.getenv("MASTODON_CLIENT_SECRET")
     MASTODON_ACCESS_TOKEN = os.getenv("MASTODON_ACCESS_TOKEN")
+    REDIS_URL = os.getenv("REDIS_HOST", "redis://redis:6379/0")

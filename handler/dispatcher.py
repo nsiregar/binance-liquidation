@@ -2,6 +2,7 @@ import emoji
 from redis import Redis
 from rq import Queue, Retry
 
+from config import config
 from handler.discord import DiscordHandler
 from handler.mastodon import MastodonHandler
 from handler.telegram import TelegramHandler
@@ -66,7 +67,7 @@ class Message:
 
 class MessageDispatcher:
     def __init__(self):
-        self.queue = Queue(connection=Redis())
+        self.queue = Queue(connection=Redis.from_url(config.REDIS_URL))
 
     def send_msg(self, message: Message) -> None:
         retry = Retry(max=3, interval=[10, 30, 60])

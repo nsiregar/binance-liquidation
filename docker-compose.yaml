@@ -1,0 +1,17 @@
+version: '3'
+services:
+  redis:
+    image: redis:6.2-alpine
+    expose:
+      - 6379
+
+  app:
+    build: .
+    command: python main.py
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    depends_on:
+      redis:
+        condition: service_started

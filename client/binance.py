@@ -1,10 +1,10 @@
-import json
 import datetime
-
-import websocket
+import json
 import logging
 
-from handler.dispatcher import MessageDispatcher, Message
+import websocket
+
+from handler.dispatcher import Message, MessageDispatcher
 
 logger = logging.getLogger()
 
