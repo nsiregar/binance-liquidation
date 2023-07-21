@@ -1,14 +1,23 @@
 import emoji
+from redis import Redis
+from rq import Queue, Retry
 
 from handler.discord import DiscordHandler
+from handler.mastodon import MastodonHandler
 from handler.telegram import TelegramHandler
 from utils.humanize import humanize_number
-from rq import Queue, Retry
-from redis import Redis
 
 
 class Message:
-    def __init__(self, start_emoji: str, pair: str, direction: str, usd: float, price: float, funding_rate: float):
+    def __init__(
+        self,
+        start_emoji: str,
+        pair: str,
+        direction: str,
+        usd: float,
+        price: float,
+        funding_rate: float,
+    ):
         self.start_emoji = start_emoji
         self.pair = pair
         self.direction = direction
@@ -23,6 +32,10 @@ class Message:
     def send_to_discord(self) -> None:
         handler = DiscordHandler()
         handler.send_msg(self.discord_msg)
+
+    def send_to_mastodon(self) -> None:
+        handler = MastodonHandler()
+        handler.send_msg(self.telegram_msg)
 
     @property
     def formatted_usd(self) -> str:
@@ -60,7 +73,7 @@ class MessageDispatcher:
         self.queue.enqueue_many(
             [
                 Queue.prepare_data(
-                    message.send_to_discord,
+                    message.send_to_mastodon,
                     retry=retry,
                 ),
                 Queue.prepare_data(
