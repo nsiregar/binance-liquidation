@@ -5,9 +5,8 @@ services:
     expose:
       - 6379
 
-  app:
+  base_app:
     build: .
-    command: python main.py
     volumes:
       - .:/app
     env_file:
@@ -15,3 +14,11 @@ services:
     depends_on:
       redis:
         condition: service_started
+
+  app:
+    extends: base_app
+    command: python main.py
+
+  worker:
+    extends: base_app
+    command: rq worker --with-scheduler --url redis://redis:6379/0
